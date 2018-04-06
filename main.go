@@ -84,14 +84,14 @@ func unzipDir(zipFile, dir string) {
 }
 
 func renameProject(fileDir string, projectName string)  {
-	fmt.Println("path: " +  fileDir)
+	//fmt.Println("path: " +  fileDir)
 	files, _ := ioutil.ReadDir(fileDir)
 	for _,file := range files{
 		if file.IsDir(){
 			renameProject(fileDir + "/" + file.Name(), projectName)
 		} else {
 			path := fileDir + "/" + file.Name()
-			fmt.Println("replace path: " +  path)
+			//fmt.Println("replace path: " +  path)
 			buf, _ := ioutil.ReadFile(path)
 			content := string(buf)
 
