@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"flag"
+	"strings"
 )
 
 // morningo 项目安装器
@@ -36,12 +37,13 @@ func main() {
 	var name string
 	flag.StringVar(&name, "project-name", "morningo", "project name")
 	flag.Parse()
-	fmt.Println("file name:", name)
 
 	os.Rename("./morningo/" + files[0].Name(), "./" + files[0].Name())
 	os.Remove("morningo")
 	os.Remove("tmp.zip")
 	os.Rename("./" + files[0].Name(), "./" + name)
+
+	renameProject( "./" + name, name)
 
 	fmt.Println("install ok!")
 }
@@ -78,5 +80,26 @@ func unzipDir(zipFile, dir string) {
 				return
 			}
 		}()
+	}
+}
+
+func renameProject(fileDir string, projectName string)  {
+	fmt.Println("path: " +  fileDir)
+	files, _ := ioutil.ReadDir(fileDir)
+	for _,file := range files{
+		if file.IsDir(){
+			renameProject(fileDir + "/" + file.Name(), projectName)
+		} else {
+			path := fileDir + "/" + file.Name()
+			fmt.Println("replace path: " +  path)
+			buf, _ := ioutil.ReadFile(path)
+			content := string(buf)
+
+			//替换
+			newContent := strings.Replace(content, "morningo/", projectName + "/", -1)
+
+			//重新写入
+			ioutil.WriteFile(path, []byte(newContent), 0)
+		}
 	}
 }
