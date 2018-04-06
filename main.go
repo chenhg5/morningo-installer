@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"io/ioutil"
 	"fmt"
+	"flag"
 )
 
 // moringo 项目安装器
@@ -32,10 +33,15 @@ func main() {
 
 	files, _ := ioutil.ReadDir("./moringo")
 
+	var name string
+	flag.StringVar(&name, "project-name", "moringo", "project name")
+	flag.Parse()
+	fmt.Println("file name:", name)
+
 	os.Rename("./moringo/" + files[0].Name(), "./" + files[0].Name())
 	os.Remove("moringo")
 	os.Remove("tmp.zip")
-	os.Rename("./" + files[0].Name(), "./moringo")
+	os.Rename("./" + files[0].Name(), "./" + name)
 
 	fmt.Println("install ok!")
 }
