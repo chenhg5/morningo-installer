@@ -12,11 +12,11 @@ import (
 	"flag"
 )
 
-// moringo 项目安装器
+// morningo 项目安装器
 // 下载，安装
 
 func main() {
-	url := "https://api.github.com/repos/chenhg5/moringo/zipball/master"
+	url := "https://api.github.com/repos/chenhg5/morningo/zipball/master"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
@@ -29,17 +29,17 @@ func main() {
 	file, _ := os.Create("tmp.zip")
 	io.Copy(file, res.Body)
 
-	unzipDir("tmp.zip", "moringo")
+	unzipDir("tmp.zip", "morningo")
 
-	files, _ := ioutil.ReadDir("./moringo")
+	files, _ := ioutil.ReadDir("./morningo")
 
 	var name string
-	flag.StringVar(&name, "project-name", "moringo", "project name")
+	flag.StringVar(&name, "project-name", "morningo", "project name")
 	flag.Parse()
 	fmt.Println("file name:", name)
 
-	os.Rename("./moringo/" + files[0].Name(), "./" + files[0].Name())
-	os.Remove("moringo")
+	os.Rename("./morningo/" + files[0].Name(), "./" + files[0].Name())
+	os.Remove("morningo")
 	os.Remove("tmp.zip")
 	os.Rename("./" + files[0].Name(), "./" + name)
 
