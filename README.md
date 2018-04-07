@@ -1,4 +1,4 @@
-### Moringo Installer
+# Moringo Installer
 
 ## usage
 
