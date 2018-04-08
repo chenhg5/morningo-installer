@@ -30,16 +30,16 @@ func main() {
 	file, _ := os.Create("tmp.zip")
 	io.Copy(file, res.Body)
 
-	unzipDir("tmp.zip", "morningo")
+	unzipDir("tmp.zip", "tmp")
 
-	files, _ := ioutil.ReadDir("./morningo")
+	files, _ := ioutil.ReadDir("./tmp")
 
 	var name string
 	flag.StringVar(&name, "project-name", "morningo", "project name")
 	flag.Parse()
 
-	os.Rename("./morningo/" + files[0].Name(), "./" + files[0].Name())
-	os.Remove("morningo")
+	os.Rename("./tmp/" + files[0].Name(), "./" + files[0].Name())
+	os.Remove("tmp")
 	os.Remove("tmp.zip")
 	os.Rename("./" + files[0].Name(), "./" + name)
 
