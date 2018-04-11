@@ -4,19 +4,30 @@ import (
 	"net/http"
 	"os"
 	"io"
-	//"log"
+	"log"
 	"archive/zip"
 	"path/filepath"
 	"io/ioutil"
 	"fmt"
 	"flag"
 	"strings"
+	"time"
 )
 
 // morningo 项目安装器
 // 下载，安装
 
 func main() {
+
+	go func() {
+		consoleStr := "█"
+		for i := 0; i != 10000; i = i + 1 {
+			log.Println(consoleStr)
+			consoleStr += "█"
+			time.Sleep(time.Second * 1)
+		}
+	}()
+
 	url := "https://api.github.com/repos/chenhg5/morningo/zipball/master"
 
 	req, _ := http.NewRequest("GET", url, nil)
