@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 	"io"
-	"log"
 	"archive/zip"
 	"path/filepath"
 	"io/ioutil"
@@ -20,10 +19,11 @@ import (
 func main() {
 
 	go func() {
+		fmt.Printf("%s", "[")
 		consoleStr := "█"
-		for i := 0; i != 10000; i = i + 1 {
-			log.Println(consoleStr)
-			consoleStr += "█"
+		for i := 0; i != 10; i = i + 1 {
+			//log.Println(consoleStr)
+			fmt.Printf("%s", consoleStr)
 			time.Sleep(time.Second * 1)
 		}
 	}()
@@ -56,7 +56,12 @@ func main() {
 
 	renameProject( "./" + name, name)
 
-	fmt.Println("install ok!")
+	fmt.Printf("%s", "] 100% \ninstall ok!\n\n")
+	fmt.Printf("%s", "|  \\/  | ___  _ __ _ __ (_)_ __   __ _ / ___| ___\n")
+	fmt.Printf("%s", "| |\\/| |/ _ \\| '__| '_ \\| | '_ \\ / _` | |  _ / _ \\\n")
+	fmt.Printf("%s", "| |  | | (_) | |  | | | | | | | | (_| | |_| | (_) |\n")
+	fmt.Printf("%s", "|_|  |_|\\___/|_|  |_| |_|_|_| |_|\\__, |\\____|\\___/\n")
+	fmt.Printf("%s", "                                 |___/")
 }
 
 func unzipDir(zipFile, dir string) {
