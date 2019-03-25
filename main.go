@@ -54,6 +54,13 @@ func main() {
 	os.Remove("tmp.zip")
 	os.Rename("./" + files[0].Name(), "./" + name)
 
+	os.Remove("./" + files[0].Name() + "/README.md")
+	os.Remove("./" + files[0].Name() + "/Dockerfile")
+	os.Remove("./" + files[0].Name() + "/LICENSE")
+	os.Remove("./" + files[0].Name() + "/pid")
+	os.Remove("./" + files[0].Name() + "/.dockerignore")
+	os.Remove("./" + files[0].Name() + "/.travis.yml")
+
 	renameProject( "./" + name, name)
 
 	fmt.Printf("%s", "] 100% \ninstall ok!\n\n")
