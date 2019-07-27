@@ -1,20 +1,17 @@
 package main
 
 import (
+	"archive/zip"
+	"flag"
+	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
-	"io"
-	"archive/zip"
 	"path/filepath"
-	"io/ioutil"
-	"fmt"
-	"flag"
 	"strings"
 	"time"
 )
-
-// morningo 项目安装器
-// 下载，安装
 
 func main() {
 
@@ -36,10 +33,12 @@ func main() {
 
 	res, _ := http.DefaultClient.Do(req)
 
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 
 	file, _ := os.Create("tmp.zip")
-	io.Copy(file, res.Body)
+	_, _ = io.Copy(file, res.Body)
 
 	unzipDir("tmp.zip", "tmp")
 
@@ -49,19 +48,22 @@ func main() {
 	flag.StringVar(&name, "project-name", "morningo", "project name")
 	flag.Parse()
 
-	os.Rename("./tmp/" + files[0].Name(), "./" + files[0].Name())
-	os.Remove("tmp")
-	os.Remove("tmp.zip")
-	os.Rename("./" + files[0].Name(), "./" + name)
+	_ = os.Rename("./tmp/"+files[0].Name(), "./"+files[0].Name())
+	_ = os.Remove("tmp")
+	_ = os.Remove("tmp.zip")
 
-	os.Remove("./" + files[0].Name() + "/README.md")
-	os.Remove("./" + files[0].Name() + "/Dockerfile")
-	os.Remove("./" + files[0].Name() + "/LICENSE")
-	os.Remove("./" + files[0].Name() + "/pid")
-	os.Remove("./" + files[0].Name() + "/.dockerignore")
-	os.Remove("./" + files[0].Name() + "/.travis.yml")
+	_ = os.Remove("./" + files[0].Name() + "/README_CN.md")
+	_ = os.Remove("./" + files[0].Name() + "/Dockerfile")
+	_ = os.Remove("./" + files[0].Name() + "/LICENSE")
+	_ = os.Remove("./" + files[0].Name() + "/pid")
+	_ = os.Remove("./" + files[0].Name() + "/.dockerignore")
+	_ = os.Remove("./" + files[0].Name() + "/.travis.yml")
+	_ = os.Remove("./" + files[0].Name() + "/dancer")
+	_ = os.Remove("./" + files[0].Name() + "/cli")
 
-	renameProject( "./" + name, name)
+	_ = os.Rename("./"+files[0].Name(), "./"+name)
+
+	renameProject("./"+name, name)
 
 	fmt.Printf("%s", "] 100% \ninstall ok!\n\n")
 	fmt.Printf("%s", "|  \\/  | ___  _ __ _ __ (_)_ __   __ _ / ___| ___\n")
@@ -77,25 +79,31 @@ func unzipDir(zipFile, dir string) {
 	if err != nil {
 		//log.Fatalf("Open zip file failed: %s\n", err.Error())
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	for _, f := range r.File {
 		func() {
 			path := dir + string(filepath.Separator) + f.Name
-			os.MkdirAll(filepath.Dir(path), 0755)
+			_ = os.MkdirAll(filepath.Dir(path), 0755)
 			fDest, err := os.Create(path)
 			if err != nil {
 				//log.Printf("Create failed: %s\n", err.Error())
 				return
 			}
-			defer fDest.Close()
+			defer func() {
+				_ = fDest.Close()
+			}()
 
 			fSrc, err := f.Open()
 			if err != nil {
 				//log.Printf("Open failed: %s\n", err.Error())
 				return
 			}
-			defer fSrc.Close()
+			defer func() {
+				_ = fSrc.Close()
+			}()
 
 			_, err = io.Copy(fDest, fSrc)
 			if err != nil {
@@ -106,12 +114,12 @@ func unzipDir(zipFile, dir string) {
 	}
 }
 
-func renameProject(fileDir string, projectName string)  {
+func renameProject(fileDir string, projectName string) {
 	//fmt.Println("path: " +  fileDir)
 	files, _ := ioutil.ReadDir(fileDir)
-	for _,file := range files{
-		if file.IsDir(){
-			renameProject(fileDir + "/" + file.Name(), projectName)
+	for _, file := range files {
+		if file.IsDir() {
+			renameProject(fileDir+"/"+file.Name(), projectName)
 		} else {
 			path := fileDir + "/" + file.Name()
 			//fmt.Println("replace path: " +  path)
@@ -119,10 +127,10 @@ func renameProject(fileDir string, projectName string)  {
 			content := string(buf)
 
 			//替换
-			newContent := strings.Replace(content, "morningo/", projectName + "/", -1)
+			newContent := strings.Replace(content, "morningo/", projectName+"/", -1)
 
 			//重新写入
-			ioutil.WriteFile(path, []byte(newContent), 0)
+			_ = ioutil.WriteFile(path, []byte(newContent), 0)
 		}
 	}
 }
